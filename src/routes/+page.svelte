@@ -5,10 +5,10 @@
 </script>
 
 <svelte:head
-	><meta name="description" content="Realtime weather" /><title>Weather</title></svelte:head
+	><meta name="description" content="Realtime weather" /><title>MiniWeather</title></svelte:head
 >
 
-<h1>Welcome to my weather info</h1>
+<h1>Welcome to my lightweight weather info</h1>
 
 <p>ip address:{data.ip} <br />longitude:{data.long}, latitude:{data.lat}<br />city:{data.city}</p>
 <p>weather in {data.city} feels like {data.feelsLike}C</p>
@@ -16,6 +16,6 @@
 <p>Condition: {data.weathertype}</p>
 <footer>
 	This website does not track your data and you can check out the source code <a
-		href="https://github.com">here</a
+		href="https://github.com/Colon101/miniweather">here</a
 	>
 </footer>
