@@ -100,7 +100,7 @@ export const load: PageServerLoad = (async (event: RequestEvent) => {
                 feelsLike: weather.days[0].feelslike,
                 weathertype: weather.days[0].conditions,
                 temp: weather.days[0].temp,
-                forecast: [...getForecast(weather.days)]
+                forecast: getForecast(weather.days)
             };
         }
         throw new Error("Info was null");
