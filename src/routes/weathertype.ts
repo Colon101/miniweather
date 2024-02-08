@@ -1,3 +1,12 @@
+export interface ForecastResult {
+    dayName: "Today" | "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Invalid day";
+    temp: number;
+    feelsLike: number;
+    tempmin: number;
+    tempmax: number;
+    condition: string;
+    icon: string;
+}
 export interface Weather {
     queryCost: number;
     latitude: number;

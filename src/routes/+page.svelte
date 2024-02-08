@@ -2,6 +2,8 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
+	const forecast = data.forecast;
 </script>
 
 <svelte:head
@@ -14,6 +16,12 @@
 <p>weather in {data.city} feels like {data.feelsLike}C</p>
 <p>Real weather is {data.temp}C</p>
 <p>Condition: {data.weathertype}</p>
+<h2>Forecast</h2>
+{#if forecast}
+	{#each forecast as day}
+		<p>{day.dayName}:{day.temp}C</p>
+	{/each}
+{/if}
 <footer>
 	This website does not track your data and you can check out the source code <a
 		href="https://github.com/Colon101/miniweather">here</a
