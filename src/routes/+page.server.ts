@@ -76,7 +76,7 @@ export const load: PageServerLoad = (async (event: RequestEvent) => {
     let ipAddress: string | null = rawAddress.split(":")[rawAddress.split(":").length - 1];
     let data: models.City;
     try {
-        const dbBuffer = fs.readFileSync('./src/routes/GeoLite2-City.mmdb')
+        const dbBuffer = fs.readFileSync('./GeoLite2-City.mmdb')
         const reader = await Reader.openBuffer(dbBuffer)
         if (ipAddress.startsWith("127.0.0")) {
             ipAddress = event.request.headers.get("cf-connecting-ip") || event.request.headers.get("x-forwarded-ip") || null;
