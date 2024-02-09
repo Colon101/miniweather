@@ -1,4 +1,5 @@
 <script lang="ts">
+	import WeatherIcon from '$lib/WeatherIcon.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -19,11 +20,16 @@
 <h2>Forecast</h2>
 {#if forecast}
 	{#each forecast as day}
-		<p>{day.dayName}:{day.temp}C</p>
+		<div style="display:flex">
+			<div style="width:30px;padding-top:12px;padding-right:10px">
+				<WeatherIcon icon={day.icon} />
+			</div>
+			<p>{day.dayName}:{day.temp}C</p>
+		</div>
 	{/each}
 {/if}
 <footer>
-	This website does not track your data and you can check out the source code <a
-		href="https://github.com/Colon101/miniweather">here</a
+	This website does not track your data <a href="https://github.com/Colon101/miniweather"
+		>Source Code</a
 	>
 </footer>
