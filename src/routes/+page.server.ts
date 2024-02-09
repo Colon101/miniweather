@@ -1,5 +1,5 @@
 import type { PageServerLoad, RequestEvent } from './$types';
-import { Reader } from "@maxmind/geoip2-node";
+import { WebServiceClient } from "@maxmind/geoip2-node";
 import * as models from "@maxmind/geoip2-node/dist/src/models"
 import type { Weather, DaysEntity, ForecastResult } from "./weathertype"
 import fs from "node:fs"
@@ -76,8 +76,6 @@ export const load: PageServerLoad = (async (event: RequestEvent) => {
     let ipAddress: string | null = rawAddress.split(":")[rawAddress.split(":").length - 1];
     let data: models.City;
     try {
-        const dbBuffer = fs.readFileSync('./GeoLite2-City.mmdb')
-        const reader = await Reader.openBuffer(dbBuffer)
         if (ipAddress.startsWith("127.0.0")) {
             ipAddress = event.request.headers.get("cf-connecting-ip") || event.request.headers.get("x-forwarded-ip") || null;
         }
@@ -87,7 +85,8 @@ export const load: PageServerLoad = (async (event: RequestEvent) => {
                 const resposnedata: ipfiy = await response.json();
                 ipAddress = resposnedata.ip;
             }
-            data = reader.city(ipAddress)
+            let pdata = await fetch(`https://geoip2.kfirgoldman.xyz/${ipAddress}`)
+            data = await pdata.json()
             const weatherResponse: Response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${data.location?.longitude},${data.location?.latitude}?key=${apikey}&unitGroup=metric`)
             const weather: Weather = await weatherResponse.json();
             if (!weather.days) {
@@ -107,6 +106,7 @@ export const load: PageServerLoad = (async (event: RequestEvent) => {
         }
         throw new Error("Info was null");
     } catch (error: any) {
-        return { ip: error.message }
+
+        return { ip: error.message || error.error }
     }
 });
