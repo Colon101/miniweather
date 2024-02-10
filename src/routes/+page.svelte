@@ -37,7 +37,6 @@
 			</div>
 		{/if}
 		<div>
-			<!--Make this animate when it gets pushed-->
 			<p class="text-center text-xl">feels like {data.feelsLike}C</p>
 			<p class="text-center text-xl">Real weather is {data.temp}℃</p>
 			<p class="text-center text-xl">Condition: {data.weatherType}</p>
