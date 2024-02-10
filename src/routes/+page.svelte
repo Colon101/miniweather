@@ -16,7 +16,7 @@
 <p>ip address:{data.ip} <br />longitude:{data.long}, latitude:{data.lat}<br />city:{data.city}</p>
 <p>weather in {data.city} feels like {data.feelsLike}C</p>
 <p>Real weather is {data.temp}C</p>
-<p>Condition: {data.weathertype}</p>
+<p>Condition: {data.weatherType}</p>
 <h2>Forecast</h2>
 {#if forecast}
 	{#each forecast as day}
