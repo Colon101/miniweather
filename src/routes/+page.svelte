@@ -19,14 +19,16 @@
 			<p>ip address:{data.ip}</p>
 			<p>longitude:{data.long}, latitude:{data.lat}<br />city:{data.city}</p>
 		{/if}
-		<p class="text-center">feels like {data.feelsLike}C</p>
-		<p class="text-center">Real weather is {data.temp}℃</p>
-		<p class="text-center">Condition: {data.weatherType}</p>
+		<p class="text-center text-xl">feels like {data.feelsLike}C</p>
+		<p class="text-center text-xl">Real weather is {data.temp}℃</p>
+		<p class="text-center text-xl">Condition: {data.weatherType}</p>
 		<h2 class="text-3xl text-center">Forecast</h2>
 		<div class="overflow-x-scroll flex">
 			{#if forecast}
 				{#each forecast as day}
-					<div class="pl-2 flex flex-col items-center rounded-lg shadow-xl bg-neutral-200 p-4 m-2">
+					<div
+						class="pl-2 flex flex-col items-center rounded-lg shadow-xl bg-neutral-200 p-4 m-2 sm:w-32 md:w-48 lg:w-64 xl:w-72"
+					>
 						<p class="text-3xl">{day.temp}℃</p>
 						<p class="text-center">{day.dayName}</p>
 						<div class="w-16 h-16 flex justify-center items-center">
