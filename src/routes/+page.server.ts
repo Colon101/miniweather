@@ -4,41 +4,29 @@ import * as models from "@maxmind/geoip2-node/dist/src/models"
 import type { Weather, DaysEntity, ForecastResult } from "./weathertype"
 import fs from "node:fs"
 const apikey = "52LZJ673EYPXGCYMMER99RJU6"
-interface ipfiy {
+interface ipify {
     ip: string
 }
 function incrementDayOfWeek(currentDay: number, incrementBy: number): number {
-    // Ensure incrementBy is positive
+
     incrementBy = Math.abs(incrementBy);
 
-    // Increment the day
     let newDay = currentDay + incrementBy;
 
-    // Handle overflow
     newDay = newDay % 7;
 
     return newDay;
 }
 function getDayOfWeek(num: number): ForecastResult["dayName"] {
-    switch (num) {
-        case 0:
-            return "Sunday";
-        case 1:
-            return "Monday";
-        case 2:
-            return "Tuesday";
-        case 3:
-            return "Wednesday";
-        case 4:
-            return "Thursday";
-        case 5:
-            return "Friday";
-        case 6:
-            return "Saturday";
-        default:
-            return "Invalid day";
+    const daysOfWeek: ForecastResult["dayName"][] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    if (num >= 0 && num <= 6) {
+        return daysOfWeek[num];
+    } else {
+        return "Invalid day";
     }
 }
+
 const getForecast = (days: DaysEntity[]) => {
     let result: ForecastResult[] = []
     const now = new Date();
@@ -60,7 +48,7 @@ const getForecast = (days: DaysEntity[]) => {
             const nextDayIndex = incrementDayOfWeek(today, i);
             result = [...result, {
                 dayName: getDayOfWeek(nextDayIndex),
-                temp: days[nextDayIndex].temp, // Assuming days are provided for the next 7 days
+                temp: days[nextDayIndex].temp,
                 feelsLike: days[nextDayIndex].feelslike,
                 tempmin: days[nextDayIndex].tempmin,
                 tempmax: days[nextDayIndex].tempmax,
@@ -71,42 +59,66 @@ const getForecast = (days: DaysEntity[]) => {
     }
     return result;
 }
+const cache = new Map();
+const CACHE_EXPIRATION_TIME = 5 * 60 * 60 * 1000;
+
+function cleanCache() {
+    const currentTime = Date.now();
+    for (const [key, value] of cache.entries()) {
+        if (currentTime - value.timestamp > CACHE_EXPIRATION_TIME) {
+            cache.delete(key);
+        }
+    }
+}
+
 export const load: PageServerLoad = (async (event: RequestEvent) => {
     const rawAddress: string = event.getClientAddress();
     let ipAddress: string | null = rawAddress.split(":")[rawAddress.split(":").length - 1];
     let data: models.City;
+
     try {
         if (ipAddress.startsWith("127.0.0")) {
             ipAddress = event.request.headers.get("cf-connecting-ip") || event.request.headers.get("x-forwarded-ip") || null;
         }
+
         if (!!ipAddress) {
             if (ipAddress.startsWith("192.168")) {
                 const response = await fetch("https://api.ipify.org/?format=json") || null;
-                const resposnedata: ipfiy = await response.json();
+                const resposnedata: ipify = await response.json();
                 ipAddress = resposnedata.ip;
             }
-            let pdata = await fetch(`https://geoip2.kfirgoldman.xyz/${ipAddress}`)
-            data = await pdata.json()
-            const weatherResponse: Response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${data.location?.longitude},${data.location?.latitude}?key=${apikey}&unitGroup=metric`)
-            const weather: Weather = await weatherResponse.json();
-            if (!weather.days) {
-                throw Error("weather forcast is undefined");
-            }
 
-            return {
-                ip: ipAddress,
-                city: data.city?.names.en,
-                long: data.location?.longitude,
-                lat: data.location?.latitude,
-                feelsLike: weather.days[0].feelslike,
-                weathertype: weather.days[0].conditions,
-                temp: weather.days[0].temp,
-                forecast: getForecast(weather.days)
-            };
+            cleanCache();
+
+            if (cache.has(ipAddress)) {
+                return cache.get(ipAddress);
+            } else {
+                let pdata = await fetch(`https://geoip2.kfirgoldman.xyz/${ipAddress}`)
+                data = await pdata.json()
+                const weatherResponse: Response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${data.location?.longitude},${data.location?.latitude}?key=${apikey}&unitGroup=metric`)
+                const weather: Weather = await weatherResponse.json();
+                if (!weather.days) {
+                    throw Error("weather forecast is undefined");
+                }
+
+                const cachedData = {
+                    ip: ipAddress,
+                    city: data.city?.names.en,
+                    long: data.location?.longitude,
+                    lat: data.location?.latitude,
+                    feelsLike: weather.days[0].feelslike,
+                    weatherType: weather.days[0].conditions,
+                    temp: weather.days[0].temp,
+                    forecast: getForecast(weather.days),
+                    timestamp: Date.now()
+                };
+                cache.set(ipAddress, cachedData);
+
+                return cachedData;
+            }
         }
         throw new Error("Info was null");
     } catch (error: any) {
-
         return { ip: error.message || error.error }
     }
 });
