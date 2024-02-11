@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { flip } from 'svelte/animate';
 	import { fade, fly } from 'svelte/transition';
 	import { Switch } from '$lib/components/ui/switch';
 	import { Label } from '$lib/components/ui/label';
@@ -22,7 +21,7 @@
 <div class="flex flex-col min-h-screen">
 	<div class="flex-grow">
 		<div class="flex items-center space-x-2">
-			<Switch id="ip" bind:checked={showIp}>hello</Switch>
+			<Switch id="ip" bind:checked={showIp} aria-label="ipSwitch"></Switch>
 			<Label for="ip">Show IP (not recommended)</Label>
 		</div>
 
@@ -43,19 +42,17 @@
 			<h2 class="text-3xl text-center">Forecast</h2>
 			{#if showcar}
 				<div class="overflow-x-scroll flex" transition:fly={{ y: 200, duration: 2000 }}>
-					{#if forecast}
-						{#each forecast as day}
-							<div
-								class="pl-2 flex flex-col items-center rounded-lg shadow-xl bg-neutral-200 p-4 m-2 sm:w-32 md:w-48 lg:w-64 xl:w-72"
-							>
-								<p class="text-3xl">{day.temp}℃</p>
-								<p class="text-center">{day.dayName}</p>
-								<div class="w-16 h-16 flex justify-center items-center">
-									<WeatherIcon icon={day.icon} />
-								</div>
+					{#each forecast as day}
+						<div
+							class="pl-2 flex flex-col items-center rounded-lg shadow-xl bg-neutral-200 p-4 m-2 sm:w-32 md:w-48 lg:w-64 xl:w-72"
+						>
+							<p class="text-3xl">{day.temp}℃</p>
+							<p class="text-center">{day.dayName}</p>
+							<div class="w-16 h-16 flex justify-center items-center">
+								<WeatherIcon icon={day.icon} />
 							</div>
-						{/each}
-					{/if}
+						</div>
+					{/each}
 				</div>
 			{/if}
 		</div>

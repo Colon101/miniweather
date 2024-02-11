@@ -79,6 +79,11 @@ export const load: PageServerLoad = (async (event: RequestEvent) => {
     try {
         if (ipAddress.startsWith("127.0.0")) {
             ipAddress = event.request.headers.get("cf-connecting-ip") || event.request.headers.get("x-forwarded-ip") || null;
+            if (ipAddress == null) {
+                const response = await fetch("https://api.ipify.org/?format=json") || null;
+                const resposnedata: ipify = await response.json();
+                ipAddress = resposnedata.ip;
+            }
         }
 
         if (!!ipAddress) {
@@ -117,8 +122,14 @@ export const load: PageServerLoad = (async (event: RequestEvent) => {
                 return cachedData;
             }
         }
+
         throw new Error("Info was null");
     } catch (error: any) {
-        return { ip: error.message || error.error }
+        console.log(error)
+
+        console.log(error.message || error.error)
+
+
+        return { temp: error.message || error.error }
     }
 });
