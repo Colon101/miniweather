@@ -40,7 +40,7 @@ self.addEventListener('fetch', event => {
         try {
             const response = await fetch(event.request);
             const isNotExtension = url.protocol === 'http:'
-            const isSuccess = response.status === 200;
+            const isSuccess = response.status === 200 || 304;
             if (isNotExtension && isSuccess) {
                 cache.put(event.request, response.clone())
             }
