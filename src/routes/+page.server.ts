@@ -2,7 +2,6 @@ import type { PageServerLoad, RequestEvent } from './$types';
 import { WebServiceClient } from "@maxmind/geoip2-node";
 import * as models from "@maxmind/geoip2-node/dist/src/models"
 import type { Weather, DaysEntity, ForecastResult } from "./weathertype"
-import fs from "node:fs"
 const apikey = "52LZJ673EYPXGCYMMER99RJU6"
 interface ipify {
     ip: string
@@ -74,7 +73,7 @@ function cleanCache() {
 export const load: PageServerLoad = (async (event: RequestEvent) => {
     const rawAddress: string = event.getClientAddress();
     let ipAddress: string | null = rawAddress.split(":")[rawAddress.split(":").length - 1];
-    let data: models.City;
+    let data: IPInfoResponse;
 
     try {
         if (ipAddress.startsWith("127.0.0")) {
@@ -98,9 +97,9 @@ export const load: PageServerLoad = (async (event: RequestEvent) => {
             if (cache.has(ipAddress)) {
                 return cache.get(ipAddress);
             } else {
-                let pdata = await fetch(`https://geoip2.kfirgoldman.xyz/${ipAddress}`)
+                let pdata = await fetch(`http://ip-api.com/json/${ipAddress}`)
                 data = await pdata.json()
-                const weatherResponse: Response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${data.location?.longitude},${data.location?.latitude}?key=${apikey}&unitGroup=metric`)
+                const weatherResponse: Response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${data.lon},${data.lat}?key=${apikey}&unitGroup=metric`)
                 const weather: Weather = await weatherResponse.json();
                 if (!weather.days) {
                     throw Error("weather forecast is undefined");
@@ -108,9 +107,9 @@ export const load: PageServerLoad = (async (event: RequestEvent) => {
 
                 const cachedData = {
                     ip: ipAddress,
-                    city: data.city?.names.en,
-                    long: data.location?.longitude,
-                    lat: data.location?.latitude,
+                    city: data.city,
+                    long: data.lon,
+                    lat: data.lat,
                     feelsLike: weather.days[0].feelslike,
                     weatherType: weather.days[0].conditions,
                     temp: weather.days[0].temp,
