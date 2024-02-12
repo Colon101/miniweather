@@ -43,7 +43,7 @@ self.addEventListener('fetch', event => {
             const response = await fetch(event.request);
             const isNotExtension = url.protocol === 'http:'
             const isSuccess = response.status === 200;
-            if (isNotExtension && isSuccess) {
+            if ((isNotExtension && isSuccess) || response.url === "https://miniweather-colon101.vercel.app/") {
                 cache.put(event.request, response.clone())
             }
             return response;
