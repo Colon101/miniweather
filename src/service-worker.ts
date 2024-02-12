@@ -29,11 +29,12 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    if (caches.has("/")) {
-        console.log(caches)
-        console.log("YES")
-    }
     async function respond() {
+        if (caches.has("/")) {
+            let stuff = await caches.open(CACHE);
+            console.log(await stuff.keys())
+            console.log("YES")
+        }
 
         const url = new URL(event.request.url)
         const cache = await caches.open(CACHE);
