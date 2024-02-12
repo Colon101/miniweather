@@ -30,11 +30,11 @@ self.addEventListener('fetch', event => {
     }
 
     async function respond() {
-        if (caches.has("/")) {
-            let stuff = await caches.open(CACHE);
-            console.log(await stuff.keys())
-            console.log("YES")
-        }
+        // if (caches.has("/")) {
+        //     let stuff = await caches.open(CACHE);
+        //     console.log(await stuff.keys())
+        //     console.log("YES")
+        // }
 
         const url = new URL(event.request.url)
         const cache = await caches.open(CACHE);
@@ -49,6 +49,7 @@ self.addEventListener('fetch', event => {
             const isNotExtension = url.protocol === 'http:'
             const isSuccess = response.status === 200 || 304;
             if (isNotExtension && isSuccess) {
+                console.log("i got it")
                 cache.put(event.request, response.clone())
             }
             return response;
