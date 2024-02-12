@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 	import '../app.css';
 	async function detectSWUpdate() {
 		const registration = await navigator.serviceWorker.ready;
@@ -18,6 +19,7 @@
 	onMount(() => {
 		detectSWUpdate();
 	});
+	injectSpeedInsights();
 </script>
 
 <slot />

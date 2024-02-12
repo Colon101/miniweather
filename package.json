@@ -40,6 +40,7 @@
     "@maxmind/geoip2-node": "^5.0.0",
     "@sveltejs/adapter-node": "^4.0.1",
     "@sveltejs/adapter-vercel": "^5.1.0",
+    "@vercel/speed-insights": "^1.0.9",
     "bits-ui": "^0.18.0",
     "clsx": "^2.1.0",
     "dotenv": "^16.4.1",
