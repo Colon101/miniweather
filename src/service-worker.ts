@@ -28,7 +28,12 @@ self.addEventListener('fetch', event => {
     if (event.request.method !== 'GET') {
         return;
     }
+
+    if (caches.has("/")) {
+        console.log("YES")
+    }
     async function respond() {
+
         const url = new URL(event.request.url)
         const cache = await caches.open(CACHE);
         if (ASSETS.includes(url.pathname)) {
