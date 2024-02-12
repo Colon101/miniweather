@@ -30,6 +30,7 @@ self.addEventListener('fetch', event => {
     }
 
     if (caches.has("/")) {
+        console.log(caches)
         console.log("YES")
     }
     async function respond() {
