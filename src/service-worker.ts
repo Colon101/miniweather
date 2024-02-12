@@ -49,7 +49,6 @@ self.addEventListener('fetch', event => {
             return response;
         } catch {
 
-            console.log("yo offline")
             self.clients.matchAll().then((clients) => {
                 clients.forEach((client) => {
                     client.postMessage({ type: "IS_OFFLINE", "message": "You are offline" })
