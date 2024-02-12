@@ -2,15 +2,17 @@
 /// <reference lib="webworker"/>
 declare let self: ServiceWorkerGlobalScope;
 import { build, files, version } from "$service-worker";
+
 const CACHE = `cache-${version}`;
-const ASSETS = [...build, ...files]
+const ASSETS = [...build, ...files];
+
 self.addEventListener('install', event => {
     async function addFilesToCache() {
         const cache = await caches.open(CACHE);
         await cache.addAll(ASSETS);
     }
-    event.waitUntil(addFilesToCache())
-})
+    event.waitUntil(addFilesToCache());
+});
 
 self.addEventListener('activate', event => {
     async function deleteOldCaches() {
@@ -21,8 +23,7 @@ self.addEventListener('activate', event => {
         }
     }
     event.waitUntil(deleteOldCaches());
-})
-
+});
 
 self.addEventListener('fetch', event => {
     if (event.request.method !== 'GET') {
@@ -30,42 +31,41 @@ self.addEventListener('fetch', event => {
     }
 
     async function respond() {
-        // if (caches.has("/")) {
-        //     let stuff = await caches.open(CACHE);
-        //     console.log(await stuff.keys())
-        //     console.log("YES")
-        // }
-
-        const url = new URL(event.request.url)
+        const url = new URL(event.request.url);
         const cache = await caches.open(CACHE);
-        if (ASSETS.includes(url.pathname)) {
-            const cachedResponse = await cache.match(url.pathname)
+
+        // Always serve "/" from cache
+        if (url.pathname === '/' || url.pathname === '/index.html') {
+            const cachedResponse = await cache.match('/');
             if (cachedResponse) {
                 return cachedResponse;
             }
         }
+
+        // For other requests, attempt to fetch from network
         try {
             const response = await fetch(event.request);
-            const isNotExtension = url.protocol === 'http:'
-            const isSuccess = response.status === 200 || 304;
-            if (isNotExtension && isSuccess) {
-                console.log("i got it")
-                cache.put(event.request, response.clone())
+            // Cache the response if it's a successful GET request
+            if (response.status === 200 && event.request.method === 'GET') {
+                cache.put(event.request, response.clone());
             }
             return response;
         } catch {
-            const cachedResponse = await cache.match(url.pathname)
+            // If fetching from network fails, serve from cache
+            const cachedResponse = await cache.match('/');
             if (cachedResponse) {
                 return cachedResponse;
             }
+            // If not found in cache, return a 404 response
+            return new Response('Not found', { status: 404 });
         }
-        return new Response('Not found', { status: 404 })
     }
 
-    event.respondWith(respond())
-})
+    event.respondWith(respond());
+});
+
 self.addEventListener('message', event => {
     if (event.data && event.data.type === "SKIP_WAIT") {
         self.skipWaiting();
     }
-})
+});
