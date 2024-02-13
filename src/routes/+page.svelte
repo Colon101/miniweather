@@ -14,6 +14,11 @@
 	$: dataOffset = window.innerHeight - dataHeight;
 	onMount(() => {
 		dataElement = document.getElementById('data');
+		window.addEventListener('resize', () => {
+			dataHeight = dataElement != null ? dataElement.offsetHeight : 0;
+			dataOffset = window.innerHeight - dataHeight;
+		});
+
 		navigator.serviceWorker.addEventListener('message', (event) => {
 			if (event.data.type === 'IS_OFFLINE') {
 				message = event.data.message;
