@@ -1,4 +1,4 @@
-interface IPInfoResponse {
+export interface IPInfoResponse {
     status: "success" | "fail";
     message?: string;
     country: string;
@@ -16,4 +16,3 @@ interface IPInfoResponse {
     query: string;
 }
 
-export default IPInfoResponse;

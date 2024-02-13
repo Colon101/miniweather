@@ -1,5 +1,5 @@
 import type { PageServerLoad, RequestEvent } from './$types';
-import { WebServiceClient } from "@maxmind/geoip2-node";
+import type { IPInfoResponse } from '$lib/IPInfoResponse';
 import * as models from "@maxmind/geoip2-node/dist/src/models"
 import type { Weather, DaysEntity, ForecastResult } from "./weathertype"
 const apikey = "52LZJ673EYPXGCYMMER99RJU6"
