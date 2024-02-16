@@ -57,7 +57,7 @@
 			<div class="overflow-x-scroll flex" transition:fly={{ y: 200, duration: 2000 }}>
 				{#each forecast as day}
 					<div
-						class="pl-2 flex flex-col items-center rounded-lg shadow-xl bg-neutral-200 p-4 m-2 sm:w-32 md:w-48 lg:w-64 xl:w-72"
+						class="pl-2 flex flex-col items-center rounded-lg shadow-xl bg-neutral-200 p-4 m-2 sm:w-32 md:w-48 lg:w-64 xl:w-72 min-w-28"
 					>
 						<p class="text-3xl">{day.temp}℃</p>
 						<p class="text-center">{day.dayName}</p>
