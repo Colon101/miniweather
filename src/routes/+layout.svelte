@@ -19,7 +19,7 @@
 	onMount(() => {
 		detectSWUpdate();
 	});
-	injectSpeedInsights();
+	// injectSpeedInsights(); I nono wanna hurt adblockers
 </script>
 
 <slot />
