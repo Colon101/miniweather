@@ -45,7 +45,7 @@
 	<Switch id="dark" bind:checked={dark} aria-label="darkSwitch"></Switch>
 	<Label for="dark">Dark Mode</Label>
 </div>
-<div class="h-0 max-md:h-8"></div>
+<div class="h-0 max-md:h-10"></div>
 <!-- <div class="fixed top-0 left-0 z-50 flex items-center space-x-2 m-4 mt-12">
 	<Switch id="ip" bind:checked={showIp} aria-label="ipSwitch"></Switch>
 	<Label for="ip">Show IP (not recommended)</Label>
