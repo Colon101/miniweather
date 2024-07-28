@@ -3,6 +3,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import { Switch } from '$lib/components/ui/switch';
 	import { Label } from '$lib/components/ui/label';
+	import { browser } from '$app/environment';
 	import WeatherIcon from '$lib/WeatherIcon.svelte';
 	import type { PageData } from './$types';
 	export let data: PageData;
@@ -12,8 +13,9 @@
 	let dataElement: HTMLElement | null;
 	let dark: boolean;
 	$: dataHeight = dataElement != null ? dataElement.offsetHeight : 0;
-	$: dataOffset = window.innerHeight - dataHeight;
+	$: dataOffset = browser ? window.innerHeight - dataHeight : 0;
 	onMount(() => {
+		showcar = true;
 		dark = false;
 		dataElement = document.getElementById('data');
 		window.addEventListener('resize', () => {
@@ -26,13 +28,13 @@
 				message = event.data.message;
 			}
 		});
-		showcar = true;
 	});
 	const forecast = data.forecast;
-
-	$: dark
-		? window.document.body.classList.add('darkmode')
-		: window.document.body.classList.remove('darkmode');
+	$: browser
+		? dark
+			? window.document.body.classList.add('darkmode')
+			: window.document.body.classList.remove('darkmode')
+		: '';
 </script>
 
 <svelte:head
