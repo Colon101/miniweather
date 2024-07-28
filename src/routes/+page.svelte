@@ -8,14 +8,14 @@
 	import type { PageData } from './$types';
 	export let data: PageData;
 	let showIp = false;
-	let showcar = true;
+	let showcar = false;
 	let message = '';
 	let dataElement: HTMLElement | null;
 	let dark: boolean;
 	$: dataHeight = dataElement != null ? dataElement.offsetHeight : 0;
 	$: dataOffset = browser ? window.innerHeight - dataHeight : 0;
 	onMount(() => {
-		showcar = false;
+		showcar = true;
 		dark = false;
 		dataElement = document.getElementById('data');
 		window.addEventListener('resize', () => {
@@ -28,7 +28,6 @@
 				message = event.data.message;
 			}
 		});
-		showcar = true;
 	});
 	const forecast = data.forecast;
 	$: browser
